@@ -41,19 +41,19 @@ ARCHITECTURE behavior OF exp_tb IS
  
     COMPONENT mul
     PORT(
-         iA : IN  std_logic_vector(7 downto 0);
-         iB : IN  std_logic_vector(7 downto 0);
-         oZ : OUT  std_logic_vector(7 downto 0)
+         iA : IN  std_logic_vector(15 downto 0);
+         iB : IN  std_logic_vector(15 downto 0);
+         oZ : OUT  std_logic_vector(15 downto 0)
         );
     END COMPONENT;
     
 
    --Inputs
-   signal iA : std_logic_vector(7 downto 0) := (others => '0');
-   signal iB : std_logic_vector(7 downto 0) := (others => '0');
+   signal iA : std_logic_vector(15 downto 0) := (others => '0');
+   signal iB : std_logic_vector(15 downto 0) := (others => '0');
 
  	--Outputs
-   signal oZ : std_logic_vector(7 downto 0);
+   signal oZ : std_logic_vector(15 downto 0);
   
 BEGIN
  
@@ -71,8 +71,29 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;	
       -- insert stimulus here 
-      iA <= "00000111";
-      iB <= "11100000";		
+          iA <= "1000001110101000";
+          iB <= "1110000010101110";
+
+      wait for 100 ns;	
+          iA <= "0000000000000000";
+          iB <= "1110000010101110";
+
+      wait for 100 ns;	
+          iA <= "1000001110101000";
+          iB <= "0000000000000000";
+
+      wait for 100 ns;	
+          iA <= "1000001110101000";
+          iB <= "0111111110000000";
+
+      wait for 100 ns;	
+          iA <= "0111111110000000";
+          iB <= "1111111110000000";
+			 
+      wait for 100 ns;	
+          iA <= "1111111110000000";
+          iB <= "1111111110000000";	
+
       wait;
    end process;
 
