@@ -33,10 +33,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity mul is
+<<<<<<< Updated upstream
     generic ( BitNum : integer := 16);
     port    ( iA : in  std_logic_vector(15 downto 0);
               iB : in  std_logic_vector(15 downto 0);
               oZ : out std_logic_vector(15 downto 0) );
+=======
+    port( iA : in  std_logic_vector(7 downto 0);
+          iB : in  std_logic_vector(7 downto 0);
+			 oRange : out std_logic;
+          oZ : out std_logic_vector(7 downto 0) );
+>>>>>>> Stashed changes
 end mul;
 
 architecture Behavioral of mul is
@@ -89,6 +96,7 @@ Inst_nBitAdder1:
 	 port map( iA     => sAddE1E2,
               iB     => "10000001",
               iCarry => '0',
+<<<<<<< Updated upstream
               oRes   => sTempExp,
               oCarry => sDummy);	
 
@@ -105,6 +113,15 @@ Inst_nBitAdder1:
     oZ <= sSign & sExp & sFraction;			  
 -- scale the result
 -- ....
+=======
+              oRes   => oZ,
+              oCarry => oRange);	
+>>>>>>> Stashed changes
 
+--process(iA, iB, sDummy)
+--begin
+--
+--end process;				  
+--
 end Behavioral;
 
