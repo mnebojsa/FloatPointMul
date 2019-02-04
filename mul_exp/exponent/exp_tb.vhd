@@ -40,12 +40,11 @@ ARCHITECTURE behavior OF exp_tb IS
     -- Component Declaration for the Unit Under Test (UUT)
  
     COMPONENT mul
-    PORT(
-         iA : IN  std_logic_vector(7 downto 0);
-         iB : IN  std_logic_vector(7 downto 0);
-			oRange : out std_logic;
-         oZ : OUT  std_logic_vector(7 downto 0)
-        );
+    port( iA     : in  std_logic_vector(7 downto 0);
+          iB     : in  std_logic_vector(7 downto 0);
+          oInf_n : out std_logic;
+          oInf_p : out std_logic;
+          oZ     : out std_logic_vector(9 downto 0) );
     END COMPONENT;
     
 
@@ -54,8 +53,9 @@ ARCHITECTURE behavior OF exp_tb IS
    signal iB : std_logic_vector(7 downto 0) := (others => '0');
 
  	--Outputs
-   signal oZ : std_logic_vector(7 downto 0);
-   signal oRange : std_logic;
+   signal oZ : std_logic_vector(9 downto 0);
+   signal oInf_n : std_logic;
+   signal oInf_p : std_logic;
 	-- Helper signals
    signal oZ_check : unsigned(9 downto 0) := (others => '0');
   
@@ -65,7 +65,8 @@ BEGIN
    uut: mul PORT MAP (
           iA => iA,
           iB => iB,
-			 oRange => oRange,
+			 oInf_n => oInf_n,
+			 oInf_p => oInf_p,
           oZ => oZ
         );
 
@@ -92,7 +93,7 @@ BEGIN
 				  voZ_check := iA_check + iB_check - to_unsigned(127,10);
 				  oZ_check <= voZ_check;
 
-           -- assert if denormalized input
+      -- assert if denormalized input
               assert iA(7 downto 0) /= "00000000"
 				  report " denormalized input"
               severity WARNING;
@@ -101,18 +102,28 @@ BEGIN
               assert iB(7 downto 0) /= "00000000"
 				  report " denormalized input"
               severity WARNING;
+
+      -- assert if infinity input
+              assert iA(7 downto 0) /= "11111111"
+				  report " infinity input"
+              severity WARNING;
+
+           -- assert if infinity input
+              assert iB(7 downto 0) /= "11111111"
+				  report " infinity input"
+              severity WARNING;
 				  
-           -- FAILURE if check value and output value are different				  
+     -- ERROR if check value and output value are different				  
               assert std_logic_vector(voZ_check(7 downto 0)) /= oZ
               report "--------------- different calculus value ------------------iA = " & integer'image(to_integer(unsigned(iA))) & "  iB = " & integer'image(to_integer(unsigned(iB)))
               severity ERROR;
 
-           -- assert if result is -infinity
+     -- assert if result is -infinity
               assert oZ_check(9 downto 8) /= "11"
 				  report " - infinity. iA = " & integer'image(to_integer(unsigned(iA))) & "  iB = " & integer'image(to_integer(unsigned(iB)))
               severity WARNING;
 
-           -- assert if result is +infinity				  
+     -- assert if result is +infinity				  
               assert oZ_check(9 downto 0) /= "0011111111"
 				  report " (0011111111) + infinity. iA = " & integer'image(to_integer(unsigned(iA))) & "  iB = " & integer'image(to_integer(unsigned(iB)))
               severity WARNING;
